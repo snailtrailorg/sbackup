@@ -1,0 +1,148 @@
+########################################################################################################################
+# snail_backup.conf.template - SNAIL BACKUP CONFIGURATION FILE TEMPLATE
+########################################################################################################################
+# This template is a sample of configuration file of snail_backup.sh script, which is a simple backup script running in
+# sh shell for FreeBSD systems.
+# 
+# The script is designed to make sequential backups of specified directories on local or remote hosts, and to a local
+# or remote host.
+# 
+# In local side, a device can be automatically mounted to a specified mount point before backup, and unmounted after 
+# backup is completed through corresponding configuration items.
+# 
+# The scripts is based on rsync, which is a fast and versatile file synchronization tool. Backup from or to remote host
+# is supported through SSH protocol.
+# 
+# Note that if you want to operate remote backup, SSH configuration must be set up properly to build SSH command, and
+# [user@]<host>:<path> should be contains in SOURCE_FOLDER or TARGET_ROOT_FOLDER.
+# 
+# JOB_IDENTIFIER is a unique identifier for backup jobs, it is also used as TARGET FOLDER NAME, log folder name and pid
+# file name, so it is restricted with special rules described below.
+#
+# The following configuration items can be overridden by command line options, with this funcion, you can make multiple
+# backup schedules with the same configuration file.
+#    -----------------------------------------------
+#    Configuration Items       Command Line Options
+#    -----------------------------------------------
+#    JOB_IDENTIFIER            -j, --job-identifier
+#    ENABLE_AUTO_CLEAN         -a, --auto-clean
+#    RETAIN_COUNT              -r, --retain-count
+#    -----------------------------------------------
+# e.g.,schedule daily, weekly, monthly backup with cron service:
+#    0 2 * * * /usr/local/sbin/snail_backup.sh -c /usr/local/etc/snail/snail_backup.conf -j daily   -a -r 60
+#    0 3 * * 0 /usr/local/sbin/snail_backup.sh -c /usr/local/etc/snail/snail_backup.conf -j weekly  -a -r 53
+#    0 4 1 * * /usr/local/sbin/snail_backup.sh -c /usr/local/etc/snail/snail_backup.conf -j monthly -a -r 24    
+#
+# You can also schedule multiple backups between more hosts, devices, or directories with different configuration
+# files, only if you can ensure that the target folder is separated clearly.
+#
+# So that it is strongly recommended:
+#     1) DO NOT USE SAME JOB_IDENTIFIER FOR DIFFERENT BACKUP JOBS WITH A SAME CONFIGURATION FILES.
+#     2) DO SET A SAME 'TARGET_ROOT_FOLDER' IN DIFFERENT CONFIGURATION FILES.
+#
+# It is recommended to put this configuration file in /usr/local/etc/snail/ and put snail_backup.sh in /usr/local/sbin/
+# directory.
+########################################################################################################################
+
+# ----------------------------------------------------------------------------------------------------------------------
+# AUTO-MOUNT CONFIGURATION
+# ----------------------------------------------------------------------------------------------------------------------
+# Enable automatic mounting/unmounting of dedicated backup devices
+# This minimizes exposure time and improves security against ransomware
+# Only one device is supported at present, write another script and call snail_backup.sh in it if you want more
+# ----------------------------------------------------------------------------------------------------------------------
+# Enable/disable automatically mount/unmount functionality, must be "true" or "false"
+ENABLE_AUTOMOUNT="true"
+# Backup storage device name
+MOUNT_DEVICE="/dev/nda0p11"
+# Mount point for backup device
+MOUNT_POINT="/mnt/snail_backup"
+# Filesystem type (e.g., ufs, zfs, ext4)， set to "" if you don't want to use -t option while mount
+MOUNT_FS_TYPE="ufs"
+
+# ----------------------------------------------------------------------------------------------------------------------
+# SSH COMMAND CONFIGURATION
+# ----------------------------------------------------------------------------------------------------------------------
+# Configure ssh command parameters for remote-to-local or local-to-remote backups
+# If you want to do remote backup with ssh with unusual ssh port or keyfile, these configuration items should be enabled
+# Refer to '--rsh=COMMAND, -e' option of rsync
+# ----------------------------------------------------------------------------------------------------------------------
+# Enable/disable '-e ssh ...' option for backup, must be "true" or "false"
+ENABLE_SSH="false"
+# SSH port number, should be in range of 1-65535
+SSH_PORT=22
+# Path to SSH key file for passwordless authenticator
+SSH_KEY_FILE=""
+
+# ----------------------------------------------------------------------------------------------------------------------
+# BACKUP SOURCE & DESTINATION CONFIGURATION
+# ----------------------------------------------------------------------------------------------------------------------
+# Backup source and destination configuration
+# Refer to rsync man page to get detail infomations
+# ----------------------------------------------------------------------------------------------------------------------
+# Source folder to backup, e.g.: "/", "/home /usr", "user@remote-host:/home", "rsync://user#remote:port/home"
+SOURCE_FOLDER="/"
+# Tatget root directory for backup, e.g.: "/backup", "usre@remote-host:/backup",  "rsync://user#remote:port/backup"
+# The real target of a single backup is: $TARGET_ROOT_FOLDER/$JOB_IDENTIFIER/$TIMESTAMPS
+TARGET_ROOT_FOLDER="/mnt/snail_backup"
+# Minimum free space required (1GB default), if set to none zero, the script will check free space before backup
+MIN_FREE_SPACE_KB=1024000
+
+# ----------------------------------------------------------------------------------------------------------------------
+# JOB IDENTIFICATION CONFIGURATION (OVERRIDEABLE)
+# ----------------------------------------------------------------------------------------------------------------------
+# Backup job name (also used for folders, logs, PID file), only letters, numbers and underscores are allowed
+# This parameters can be overridden via command line arguments
+JOB_IDENTIFIER="daily"
+
+# ----------------------------------------------------------------------------------------------------------------------
+# AUTO-CLEANUP CONFIGURATION (OVERRIDEABLE)
+# ----------------------------------------------------------------------------------------------------------------------
+# Enable automatically cleanup failure backups, old backups and logs
+ENABLE_AUTO_CLEAN="true"
+# Number of backups and logs to retain during cleanup, failure backups will not be retained while auto clean is enabled
+RETAIN_COUNT=3
+
+# ----------------------------------------------------------------------------------------------------------------------
+# EXCLUDED DIRECTORIES CONFIGURATION
+# ----------------------------------------------------------------------------------------------------------------------
+# Directories to exclude from backup
+# ----------------------------------------------------------------------------------------------------------------------
+# Each directory occupies one line, and line ending comments cannot be used here
+# If a directory contains spaces,  it must be escaped with '\ '
+EXCLUDE_DIRS="
+/.snap/*
+/.sujournal
+/backup_in_progress
+/boot/efi/*
+/compat/*
+/dev/*
+/entropy
+/home/*/.cache/*
+/home/*/.thumbnails/*
+/home/*/.local/share/Trash/*
+/media/*
+/mnt/*
+/net/*
+/proc/*
+/sys/*
+/tmp/*
+/usr/obj/*
+/usr/ports/*
+/usr/src/*
+/var/audit/*
+/var/cache/*
+/var/crash/*
+/var/db/etcupdate/*
+/var/db/freebsd-update/*
+/var/db/ldconfig/*
+/var/db/entropy/*
+/var/db/pkg/repos/*
+/var/db/portsnap/*
+/var/db/portsnap/files/*
+/var/empty/*
+/var/spool/lock/*
+/var/lock/*
+/var/run/*
+/var/tmp/*
+"
