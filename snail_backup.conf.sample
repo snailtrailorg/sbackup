@@ -1,5 +1,5 @@
 ########################################################################################################################
-# snail_backup.conf.template - SNAIL BACKUP CONFIGURATION FILE TEMPLATE
+# snail_backup.conf.sample - SNAIL BACKUP CONFIGURATION FILE TEMPLATE
 ########################################################################################################################
 # This template is a sample of configuration file of snail_backup.sh script, which is a simple backup script running in
 # sh shell for FreeBSD systems.
@@ -101,7 +101,7 @@ JOB_IDENTIFIER="daily"
 # Enable automatically cleanup failure backups, old backups and logs
 ENABLE_AUTO_CLEAN="true"
 # Number of backups and logs to retain during cleanup, failure backups will not be retained while auto clean is enabled
-RETAIN_COUNT=3
+RETAIN_COUNT=30
 
 # ----------------------------------------------------------------------------------------------------------------------
 # EXCLUDED DIRECTORIES CONFIGURATION
