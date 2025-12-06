@@ -101,7 +101,7 @@ JOB_IDENTIFIER="daily"
 # Enable automatically cleanup failure backups, old backups and logs
 ENABLE_AUTO_CLEAN="true"
 # Number of backups and logs to retain during cleanup, failure backups will not be retained while auto clean is enabled
-RETAIN_COUNT=60
+RETAIN_COUNT=30
 
 # ----------------------------------------------------------------------------------------------------------------------
 # EXCLUDED DIRECTORIES CONFIGURATION
