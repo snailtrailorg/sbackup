@@ -789,12 +789,6 @@ prepare_job() {
 
     # Define target folder for current backup (timestamped)
     TARGET_FOLDER="$TARGET_ROOT_FOLDER/$JOB_IDENTIFIER/$TIMESTAMP"
-    # Create timestamped target directory
-    log_info "Create backup target folder if necessary: $TARGET_FOLDER"
-    mkdir -p "$TARGET_FOLDER" || {
-        log_error "Failed to create target folder: $TARGET_FOLDER"
-        exit 1
-    }
 }
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -985,6 +979,13 @@ set_res_limits() {
 # Exits with error code 1 if rsync fails or flag file operations fail.
 # ----------------------------------------------------------------------------------------------------------------------
 perform_job() {
+    # Create target directory
+    log_info "Create backup target folder: $TARGET_FOLDER"
+    mkdir -p "$TARGET_FOLDER" || {
+        log_error "Failed to create target folder: $TARGET_FOLDER"
+        exit 1
+    }
+
     log_info "Checking target folder..."
     # Check if target folder is not empty (prevents overwriting existing data)
     if [ -n "$(ls -A "$TARGET_FOLDER" 2>/dev/null)" ]; then
@@ -1029,7 +1030,7 @@ perform_job() {
     # Record start time (Unix epoch seconds) for duration calculation
     START_TIME=$(date +%s)
 
-    log_info "Rsync backup command: $rsynv_cmd"
+    log_info "Rsync backup command: $rsync_cmd"
     log_info "Starting rsync backup..."
     # Execute rsync command (redirect stdout to null, stderr to stdout for error capture)
     if eval "$rsync_cmd" 2>&1 >/dev/null; then
