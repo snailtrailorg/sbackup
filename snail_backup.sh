@@ -232,7 +232,7 @@ usage() {
 	examples:
 	    ${script_name} -c system-backup.conf
 	    ${script_name} -c home-backup.conf --retain-full 3
-	    ${script_name} -c daily.conf --job-identifier daily --increase-count 10 --retain-full 3
+	    ${script_name} -c daily.conf --job-identifier daily --retain-count 10
 
 	EOF
 }
@@ -383,7 +383,7 @@ parse_arguments() {
 
             # Set auto-clean flag from command line override
             ENABLE_AUTO_CLEAN="$2"
-	    log_info "Override enable automatiocally clean backups and logs to $ENABLE_AUTO_CLEAN"
+	    log_info "Override enable automatically clean backups and logs to $ENABLE_AUTO_CLEAN"
             shift 2
             ;;
 
@@ -1025,7 +1025,7 @@ perform_job() {
     # Add log file to rsync command (rsync logs to same file as script)
     rsync_cmd="$rsync_cmd --log-file=$LOG_FILE"
     # Add source and target to rsync command (trailing slash on target for correct rsync behavior)
-    rsync_cmd="$rsync_cmd '$SOURCE_FOLDER' '$TARGET_FOLDER/'"
+    rsync_cmd="$rsync_cmd $SOURCE_FOLDER $TARGET_FOLDER/"
 
     # Record start time (Unix epoch seconds) for duration calculation
     START_TIME=$(date +%s)
