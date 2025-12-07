@@ -1213,6 +1213,12 @@ cleanup() {
         log_info "Program terminated unexpectedly, code: $exit_code"
     fi
 
+    # Clean up empty backup directory
+    if [ -n "$TARGET_FOLDER" ] && [ -d "$TARGET_FOLDER" ] && []; then
+        log_info "Cleaning empty backup folder..."
+        rm -rf "$TARGET_FOLDER" 2>/dev/null
+    fi
+
     # Clean up incomplete backup directory (has processing flag file)
     if [ -n "$TARGET_FOLDER" ] && [ -d "$TARGET_FOLDER" ] && [ -f "$TARGET_FOLDER/$JOB_PROCESSING" ]; then
         log_info "Cleaning uncompleted backup..."
