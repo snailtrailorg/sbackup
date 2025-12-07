@@ -261,23 +261,20 @@ find_config_file() {
     if [ "${config_file#/}" != "$config_file" ]; then
         # Absolute path - check if file exists
         if [ -f "$config_file" ]; then
-            echo "$config_file"
-            return 0
-        else
-            return 1
+            found_file="$config_file"
         fi
+    else
+        # Relative path - search predefined folders
+        local config_folder
+        for config_folder in $CONFIG_FILE_FOLDERS; do
+            local potential_file="$config_folder/$config_file"
+            # Check if file exists in current search folder
+            if [ -f "$potential_file" ]; then
+                found_file="$potential_file"
+                break
+            fi
+        done
     fi
-
-    # Relative path - search predefined folders
-    local folder
-    for folder in $CONFIG_FILE_FOLDERS; do
-        local potential_file="$folder/$config_file"
-        # Check if file exists in current search folder
-        if [ -f "$potential_file" ]; then
-            found_file="$potential_file"
-            break
-        fi
-    done
 
     # Return found file path if exists
     if [ -n "$found_file" ]; then
@@ -608,8 +605,8 @@ mount_device() {
 
     # Build mount command (include filesystem type if specified)
     local mount_cmd
-    [ -n "$MOUNT_FS_TYPE" ] && mount_cmd="mount -t $MOUNT_FS_TYPE $MOUNT_DEVICE $MOUNT_POINT" ||
-        mount_cmd="mount $MOUNT_DEVICE $MOUNT_POINT"
+    [ -n "$MOUNT_FS_TYPE" ] && mount_cmd="mount -t $MOUNT_FS_TYPE \"$MOUNT_DEVICE\" \"$MOUNT_POINT\"" ||
+        mount_cmd="mount \"$MOUNT_DEVICE\" \"$MOUNT_POINT\""
 
     log_info "Executing mount command: $mount_cmd"
 
@@ -647,7 +644,7 @@ umount_device() {
     }
 
     # Build unmount command (target mount point, not device)
-    local umount_cmd="umount $MOUNT_POINT"
+    local umount_cmd="umount \"$MOUNT_POINT\""
     log_info "Executing unmount command: $umount_cmd"
 
     # Execute unmount command (suppress stderr for cleaner logging)
@@ -728,7 +725,7 @@ build_ssh_command() {
 
     # Add key file parameter if SSH_KEY_FILE is defined
     if [ -n "$SSH_KEY_FILE" ]; then
-        SSH_COMMAND="$SSH_COMMAND -i $SSH_KEY_FILE"
+        SSH_COMMAND="$SSH_COMMAND -i '$SSH_KEY_FILE'"
     fi
 }
 
@@ -1021,11 +1018,11 @@ perform_job() {
     # Add exclude list to rsync command if defined
     [ -n "$EXCLUDE_LIST" ] && rsync_cmd="$rsync_cmd $EXCLUDE_LIST"
     # Add SSH command to rsync command if defined (remote backups)
-    [ -n "$SSH_COMMAND" ] && rsync_cmd="$rsync_cmd -e '$SSH_COMMAND'"
+    [ -n "$SSH_COMMAND" ] && rsync_cmd="$rsync_cmd -e \"$SSH_COMMAND\""
     # Add log file to rsync command (rsync logs to same file as script)
-    rsync_cmd="$rsync_cmd --log-file=$LOG_FILE"
+    rsync_cmd="$rsync_cmd --log-file=\"$LOG_FILE\""
     # Add source and target to rsync command (trailing slash on target for correct rsync behavior)
-    rsync_cmd="$rsync_cmd $SOURCE_FOLDER $TARGET_FOLDER/"
+    rsync_cmd="$rsync_cmd \"$SOURCE_FOLDER\" \"$TARGET_FOLDER/\""
 
     # Record start time (Unix epoch seconds) for duration calculation
     START_TIME=$(date +%s)
