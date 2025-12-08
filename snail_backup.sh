@@ -23,8 +23,8 @@
 #   - System-level backups with exclusion of non-essential directories
 #
 # DEPENDENCIES:
-#   - Core FreeBSD utilities (awk, basename, cat, chmod, cut, date, df, find, grep, head, ls, mkdir, mount, nice, ps,
-#     renice, rm, rsync, sed, sort, ssh, stat, tail, touch, tr, umount, wc)
+#   - Core FreeBSD utilities: (awk basename cat chmod cut date df find grep head lockf ls mkdir mount nice ps renice rm
+#     rsync sed sort ssh stat tail touch tr umount wc)
 #   - rsync (installed via pkg or ports)
 #   - SSH client (for remote backups)
 #
@@ -57,7 +57,8 @@ VERSION="1.0.0"                                                 # Script version
 LOG_ROOT_FOLDER="/var/log/snail_backup"                         # Log storage directory
 PID_ROOT_FOLDER="/var/run/snail_backup"                         # Folder of PID file to prevent concurrent runs
 CONFIG_FILE_FOLDERS="/usr/local/etc/snail /etc/snail"           # Search path if relative path specified
-JOB_PROCESSING="_job_is_processing_"                            # A file exist in target folder indicate job not finished
+JOB_PROCESSING="_job_is_processing_"                            # A file existing in target folder indicates backup job
+                                                                # is not finished
 
 # Dynamic variable declaration depends on job identifier
 JOB_IDENTIFIER=""
@@ -205,7 +206,7 @@ check_commands() {
 #   - No arguments are provided
 #   - -h/--help option is used
 #   - Invalid arguments are provided
-#   - Configuration file is missing
+#   - Required arguments are missing
 # ----------------------------------------------------------------------------------------------------------------------
 usage() {
     # Get script name (without path) for usage message

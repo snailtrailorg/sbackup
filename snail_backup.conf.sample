@@ -28,7 +28,7 @@
 #    ENABLE_AUTO_CLEAN         -a, --auto-clean
 #    RETAIN_COUNT              -r, --retain-count
 #    -----------------------------------------------
-# e.g.,schedule daily, weekly, monthly backup with cron service:
+# e.g.: schedule daily, weekly, monthly backup with cron service:
 #    0 2 * * * /usr/local/sbin/snail_backup.sh -c /usr/local/etc/snail/snail_backup.conf -j daily   -a -r 60
 #    0 3 * * 0 /usr/local/sbin/snail_backup.sh -c /usr/local/etc/snail/snail_backup.conf -j weekly  -a -r 53
 #    0 4 1 * * /usr/local/sbin/snail_backup.sh -c /usr/local/etc/snail/snail_backup.conf -j monthly -a -r 24    
@@ -36,9 +36,9 @@
 # You can also schedule multiple backups between more hosts, devices, or directories with different configuration
 # files, only if you can ensure that the target folder is separated clearly.
 #
-# So that it is strongly recommended:
-#     1) DO NOT USE SAME JOB_IDENTIFIER FOR DIFFERENT BACKUP JOBS WITH A SAME CONFIGURATION FILES.
-#     2) DO SET A SAME 'TARGET_ROOT_FOLDER' IN DIFFERENT CONFIGURATION FILES.
+# Therefore, it is strongly recommended:
+#     1) DO NOT SET A SAME 'JOB_IDENTIFIER' FOR DIFFERENT BACKUP JOBS WITH A SAME CONFIGURATION FILES.
+#     2) DO NOT SET A SAME 'TARGET_ROOT_FOLDER' IN DIFFERENT CONFIGURATION FILES.
 #
 # It is recommended to put this configuration file in /usr/local/etc/snail/ and put snail_backup.sh in /usr/local/sbin/
 # directory.
@@ -57,7 +57,7 @@ ENABLE_AUTOMOUNT="true"
 MOUNT_DEVICE="/dev/nda0p11"
 # Mount point for backup device
 MOUNT_POINT="/mnt/snail_backup"
-# Filesystem type (e.g., ufs, zfs, ext4)， set to "" if you don't want to use -t option while mount
+# Filesystem type (e.g., ufs, zfs, ext4), set to "" if you don't want to use -t option while mount
 MOUNT_FS_TYPE="ufs"
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -78,14 +78,14 @@ SSH_KEY_FILE=""
 # BACKUP SOURCE & DESTINATION CONFIGURATION
 # ----------------------------------------------------------------------------------------------------------------------
 # Backup source and destination configuration
-# Refer to rsync man page to get detail infomations
+# Refer to rsync man page to get detailed infomation
 # ----------------------------------------------------------------------------------------------------------------------
 # Source folder to backup, e.g.: "/", "/home /usr", "user@remote-host:/home", "rsync://user#remote:port/home"
 SOURCE_FOLDER="/"
-# Tatget root directory for backup, e.g.: "/backup", "usre@remote-host:/backup",  "rsync://user#remote:port/backup"
+# Target root directory for backup, e.g.: "/backup", "user@remote-host:/backup",  "rsync://user#remote:port/backup"
 # The real target of a single backup is: $TARGET_ROOT_FOLDER/$JOB_IDENTIFIER/$TIMESTAMPS
 TARGET_ROOT_FOLDER="/mnt/snail_backup"
-# Minimum free space required (1GB default), if set to none zero, the script will check free space before backup
+# Minimum free space required (1GB default), if set to none-zero, the script will check free space before backup
 MIN_FREE_SPACE_KB=1024000
 
 # ----------------------------------------------------------------------------------------------------------------------
