@@ -101,17 +101,17 @@ log() {
 
     # Write to log file if log file path is defined
     if [ -n "$LOG_FILE" ]; then
-        echo "$log_entry" >> "$LOG_FILE"
+        echo -e "$log_entry" >> "$LOG_FILE"
     fi
 
     # Output to appropriate stream based on log level
     # WARNING/ERROR go to stderr; all others to stdout
     case "$level" in
         WARNING|ERROR)
-            echo "$log_entry" >&2
+            echo -e "$log_entry" >&2
             ;;
         *)
-            echo "$log_entry"
+            echo -e "$log_entry"
             ;;
     esac
 }
@@ -773,7 +773,7 @@ prepare_job() {
         ' _ "$JOB_PROCESSING" {} \;
     )
 
-    log_info "Found successful history backups: $history_backups"
+    log_info "Found successful history backups:\n$history_backups"
 
     # Get last (most recent) successful backup directory (sorted alphabetically/temporally)
     LAST_BACKUP_FOLDER=$(echo "$history_backups" | sort | tail -1)
@@ -1217,7 +1217,7 @@ cleanup() {
 
     # Log unexpected termination (non-zero exit code)
     if [ "$exit_code" -ne 0 ]; then
-        log_info "Program terminated unexpectedly, code: $exit_code"
+        log_error "Program terminated unexpectedly, code: $exit_code"
     fi
 
     # Clean up empty backup directory
@@ -1329,5 +1329,5 @@ main "$@"
 # --verify: verify backup integrity
 # --dry-run
 # send mail on fail
-# exclude dir inline comments and blank line
+# inline comments and blank line in EXCLUDE_DIRS
 # security check for conf file
