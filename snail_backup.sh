@@ -844,6 +844,15 @@ check_free_space() {
 #   -t 0: Non-blocking acquisition (fail immediately if lock is held by another process)
 # ----------------------------------------------------------------------------------------------------------------------
 acquire_pid_lock() {
+    # Create PID root directory if it doesn't exist
+    [ ! -d "$PID_ROOT_FOLDER" ] && {
+        log_info "PID root folder $PID_ROOT_FOLDER does not exist, creating..."
+        mkdir -p "$PID_ROOT_FOLDER" || {
+            log_error "Failed to create PID root folder $PID_ROOT_FOLDER"
+            exit 1
+        }
+    }
+
     # Define job-specific lock file path (stored in /var/run for ephemeral state)
     PID_FILE="$PID_ROOT_FOLDER/$JOB_IDENTIFIER.pid"
     log_debug "Initiating exclusive lock acquisition on PID file: $PID_FILE"
