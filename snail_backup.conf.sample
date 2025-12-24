@@ -29,9 +29,9 @@
 #    RETAIN_COUNT              -r, --retain-count
 #    -----------------------------------------------
 # e.g.: schedule daily, weekly, monthly backup with cron service:
-#    0 2 * * * /usr/local/sbin/snail_backup.sh -c /usr/local/etc/snail/snail_backup.conf -j daily   -a -r 60
-#    0 3 * * 0 /usr/local/sbin/snail_backup.sh -c /usr/local/etc/snail/snail_backup.conf -j weekly  -a -r 53
-#    0 4 1 * * /usr/local/sbin/snail_backup.sh -c /usr/local/etc/snail/snail_backup.conf -j monthly -a -r 24    
+#    0 2 * * * /usr/local/sbin/snail_backup.sh -c /usr/local/etc/snail/snail_backup.conf -j daily   -a true -r 60
+#    0 3 * * 0 /usr/local/sbin/snail_backup.sh -c /usr/local/etc/snail/snail_backup.conf -j weekly  -a true -r 53
+#    0 4 1 * * /usr/local/sbin/snail_backup.sh -c /usr/local/etc/snail/snail_backup.conf -j monthly -a true -r 24    
 #
 # You can also schedule multiple backups between more hosts, devices, or directories with different configuration
 # files, only if you can ensure that the target folder is separated clearly.

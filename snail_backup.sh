@@ -41,7 +41,7 @@
 #   3. Test basic functionality: ./snail_backup.sh -c /usr/local/etc/snail/your_config.conf --self-check
 #   4. Run manual backup: ./snail_backup.sh -c /usr/local/etc/snail/your_config.conf -j job_id
 #   5. Schedule via cron (example for daily backup at 2 AM):
-#      0 2 * * * /usr/local/sbin/snail_backup.sh -c /usr/local/etc/snail/your_config.conf -j job_id -a -r 30
+#      0 2 * * * /usr/local/sbin/snail_backup.sh -c /usr/local/etc/snail/your_config.conf -j job_id -a true -r 30
 #
 # IMPORTANT NOTES:
 #   - Always test backups and restoration procedures before production use
